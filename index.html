@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Lets Story — CRM</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0E0E0E;
+  --s1: #161616;
+  --s2: #1E1E1E;
+  --s3: #262626;
+  --gold: #C8A96E;
+  --goldx: rgba(200,169,110,0.15);
+  --goldl: rgba(200,169,110,0.3);
+  --cream: #F0EAE0;
+  --gray: #888;
+  --dim: #444;
+  --green: #7EC87E;
+  --blue: #7EB8C8;
+  --red: #C87E7E;
+  --purple: #B8A0C8;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);font-family:'Jost',sans-serif;color:var(--cream);min-height:100vh;overflow-x:hidden;}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;height:52px;background:rgba(14,14,14,0.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--goldl);z-index:200;display:flex;align-items:center;padding:0 16px;gap:6px;overflow-x:auto;}
+.nav::-webkit-scrollbar{display:none;}
+.logo{font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--gold);font-style:italic;white-space:nowrap;margin-right:12px;flex-shrink:0;}
+.nb{padding:5px 12px;border-radius:20px;border:1px solid transparent;background:none;color:var(--gray);font-family:'Jost',sans-serif;font-size:10px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;white-space:nowrap;transition:all .2s;font-weight:500;flex-shrink:0;}
+.nb:hover{color:var(--cream);border-color:var(--dim);}
+.nb.on{color:var(--gold);border-color:var(--goldl);background:var(--goldx);}
+
+/* MAIN */
+main{padding:64px 16px 80px;max-width:900px;margin:0 auto;}
+.sec{display:none;}
+.sec.on{display:block;}
+
+/* HEADERS */
+.ey{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;font-weight:500;}
+.sh{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;margin-bottom:24px;}
+.sh em{font-style:italic;color:var(--gold);}
+
+/* CARDS */
+.card{background:var(--s1);border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,0.04);margin-bottom:14px;}
+.ct{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;font-weight:500;}
+
+/* STAT GRID */
+.sg{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px;}
+.sc{background:var(--s1);border-radius:10px;padding:14px;border:1px solid rgba(255,255,255,0.04);text-align:center;}
+.sl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:6px;}
+.sv{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--gold);font-weight:300;line-height:1;}
+.ss{font-size:10px;color:var(--dim);margin-top:3px;}
+
+/* META BAR */
+.mb-wrap{margin-bottom:14px;}
+.mb-top{display:flex;justify-content:space-between;font-size:11px;color:var(--gray);margin-bottom:5px;}
+.mb{height:5px;background:var(--s2);border-radius:3px;overflow:hidden;}
+.mbf{height:100%;background:var(--gold);border-radius:3px;transition:width .5s ease;}
+
+/* FORM */
+.fr{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.inp,.sel,.ta{background:var(--s2);border:1px solid var(--dim);border-radius:8px;padding:9px 12px;color:var(--cream);font-family:'Jost',sans-serif;font-size:12px;font-weight:300;outline:none;transition:border-color .2s;-webkit-appearance:none;}
+.inp:focus,.sel:focus,.ta:focus{border-color:var(--gold);}
+.inp{flex:1;min-width:100px;}
+.sel{min-width:120px;flex:1;}
+.ta{width:100%;min-height:60px;resize:vertical;}
+.sel option{background:var(--s2);}
+
+/* BUTTONS */
+.btn{padding:9px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:1px;text-transform:uppercase;transition:all .2s;}
+.bg{background:var(--gold);color:#000;}
+.bg:hover{opacity:.85;}
+.bgh{background:var(--s2);color:var(--gray);border:1px solid var(--dim);}
+.bgh:hover{color:var(--cream);}
+.br{background:rgba(200,126,126,0.1);color:var(--red);border:1px solid rgba(200,126,126,0.2);padding:5px 10px;font-size:9px;}
+
+/* TABLE */
+.tw{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+th{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);font-weight:500;padding:8px 10px;text-align:left;border-bottom:1px solid var(--s3);}
+td{padding:10px;font-size:12px;font-weight:300;border-bottom:1px solid rgba(255,255,255,0.03);vertical-align:middle;}
+tr:hover td{background:var(--s2);}
+
+/* BADGE */
+.badge{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:20px;font-weight:600;white-space:nowrap;}
+.bg-green{background:rgba(126,200,126,0.12);color:var(--green);}
+.bg-gold{background:var(--goldx);color:var(--gold);}
+.bg-blue{background:rgba(126,184,200,0.12);color:var(--blue);}
+.bg-red{background:rgba(200,126,126,0.12);color:var(--red);}
+.bg-purple{background:rgba(184,160,200,0.12);color:var(--purple);}
+.bg-gray{background:rgba(100,100,100,0.1);color:var(--gray);}
+
+/* CHECKLIST */
+.cl{display:flex;flex-direction:column;gap:7px;}
+.ci{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:8px;background:var(--s2);cursor:pointer;transition:all .2s;border:1px solid transparent;user-select:none;}
+.ci:hover{background:var(--s3);}
+.ci.done{opacity:.45;}
+.ci.done .clabel{text-decoration:line-through;color:var(--gray);}
+.cbox{width:18px;height:18px;border-radius:4px;border:1px solid var(--dim);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;font-size:10px;margin-top:1px;}
+.ci.done .cbox{background:var(--green);border-color:var(--green);color:#000;}
+.clabel{font-size:12px;font-weight:300;line-height:1.4;}
+.csub{font-size:10px;color:var(--gray);margin-top:2px;}
+
+/* WEEK */
+.wg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.dc{background:var(--s1);border-radius:10px;padding:10px;border:1px solid rgba(255,255,255,0.04);}
+.dn{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:8px;font-weight:500;}
+.dt{display:flex;flex-direction:column;gap:4px;}
+.dtask{font-size:10px;padding:5px 7px;border-radius:5px;font-weight:300;line-height:1.3;}
+.dtask.gold{background:var(--goldx);color:var(--gold);}
+.dtask.blue{background:rgba(126,184,200,0.1);color:var(--blue);}
+.dtask.green{background:rgba(126,200,126,0.1);color:var(--green);}
+.dtask.purple{background:rgba(184,160,200,0.1);color:var(--purple);}
+
+/* EMPTY */
+.empty{text-align:center;padding:32px 16px;color:var(--gray);font-size:12px;font-weight:300;}
+.ei{font-size:28px;margin-bottom:8px;opacity:.3;}
+
+/* CAL */
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.cal-month{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--cream);}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.cal-head{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--gray);text-align:center;padding:4px 0;}
+.cal-day{min-height:48px;background:var(--s2);border-radius:6px;padding:5px;border:1px solid transparent;cursor:pointer;transition:all .2s;}
+.cal-day:hover{border-color:var(--goldl);}
+.cal-day.today{border-color:var(--gold);}
+.cal-day.other{opacity:.3;}
+.cal-num{font-size:11px;color:var(--gray);margin-bottom:3px;}
+.cal-dot{width:6px;height:6px;border-radius:50%;margin:1px auto;}
+
+/* DIVIDER */
+.div{height:1px;background:var(--s2);margin:18px 0;}
+
+/* UPGRADE PATH */
+.up{display:flex;align-items:stretch;background:var(--s1);border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.04);margin-top:14px;}
+.us{flex:1;padding:14px 10px;text-align:center;border-right:1px solid var(--s3);position:relative;}
+.us:last-child{border-right:none;}
+.ul{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);margin-bottom:5px;}
+.un{font-size:12px;color:var(--cream);margin-bottom:4px;}
+.uv{font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold);}
+
+@media(min-width:600px){
+  .sg{grid-template-columns:repeat(4,1fr);}
+  .wg{grid-template-columns:repeat(7,1fr);}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="logo">Lets Story</div>
+  <button class="nb on" onclick="go('dash',this)">Dashboard</button>
+  <button class="nb" onclick="go('rotina',this)">Rotina</button>
+  <button class="nb" onclick="go('leads',this)">Leads</button>
+  <button class="nb" onclick="go('projetos',this)">Projetos</button>
+  <button class="nb" onclick="go('conteudo',this)">Conteúdo</button>
+  <button class="nb" onclick="go('fin',this)">Financeiro</button>
+</nav>
+
+<main>
+
+<!-- DASHBOARD -->
+<div id="dash" class="sec on">
+  <div class="ey">Visão geral</div>
+  <div class="sh">Central <em>Lets Story</em></div>
+  <div class="sg" id="d-stats"></div>
+  <div class="mb-wrap">
+    <div class="mb-top"><span>Meta mensal</span><span id="d-pct">0%</span></div>
+    <div class="mb"><div class="mbf" id="d-bar" style="width:0"></div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+    <div class="card"><div class="ct">⚡ Ações pendentes</div><div id="d-acoes"></div></div>
+    <div class="card"><div class="ct">💰 Últimas entradas</div><div id="d-ents"></div></div>
+  </div>
+  <div class="ct" style="margin-top:20px;margin-bottom:10px">Caminho de upgrade</div>
+  <div class="up">
+    <div class="us"><div class="ul">Entrada</div><div class="un">Histórias Essenciais</div><div class="uv">R$350</div></div>
+    <div class="us"><div class="ul">Upgrade 1</div><div class="un">+ 2 Vídeos</div><div class="uv">R$450</div></div>
+    <div class="us"><div class="ul">Upgrade 2</div><div class="un">Narrativa Completa</div><div class="uv">R$1.000</div></div>
+    <div class="us"><div class="ul">Upgrade 3</div><div class="un">Tour FPV</div><div class="uv">R$2.000</div></div>
+    <div class="us"><div class="ul">Recorrência</div><div class="un">Curadoria</div><div class="uv">R$1k/mês</div></div>
+  </div>
+</div>
+
+<!-- ROTINA -->
+<div id="rotina" class="sec">
+  <div class="ey">Rotina</div>
+  <div class="sh">Seu <em>Ritmo</em></div>
+  <div class="card">
+    <div class="ct">☀️ Todo dia</div>
+    <div class="cl" id="r-diaria"></div>
+    <div style="margin-top:12px"><button class="btn bgh" onclick="resetR('d')" style="font-size:9px;padding:6px 12px">↺ Resetar dia</button></div>
+  </div>
+  <div class="card">
+    <div class="ct">📅 Toda semana</div>
+    <div class="cl" id="r-semanal"></div>
+    <div style="margin-top:12px"><button class="btn bgh" onclick="resetR('s')" style="font-size:9px;padding:6px 12px">↺ Resetar semana</button></div>
+  </div>
+  <div class="card">
+    <div class="ct">📆 Semana em blocos</div>
+    <div class="wg" id="r-week"></div>
+  </div>
+</div>
+
+<!-- LEADS -->
+<div id="leads" class="sec">
+  <div class="ey">Prospecção</div>
+  <div class="sh">Controle de <em>Leads</em></div>
+  <div class="card">
+    <div class="ct">+ Novo lead</div>
+    <div class="fr">
+      <input class="inp" id="l-nome" placeholder="Nome / @ Instagram">
+      <input class="inp" id="l-tipo" placeholder="Tipo (pousada, beach club...)">
+    </div>
+    <div class="fr">
+      <select class="sel" id="l-canal"><option>Instagram DM</option><option>WhatsApp</option><option>Indicação</option><option>Me chamou</option></select>
+      <select class="sel" id="l-status"><option>Abordado</option><option>Visualizou</option><option>Em conversa</option><option>Orçamento enviado</option><option>Fechado ✓</option><option>Perdido</option></select>
+      <input class="inp" id="l-obs" placeholder="Observação">
+      <button class="btn bg" onclick="addLead()">Adicionar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">Pipeline</div>
+    <div class="tw"><table><thead><tr><th>Nome</th><th>Tipo</th><th>Canal</th><th>Status</th><th>Data</th><th>Obs</th><th></th></tr></thead><tbody id="l-tb"></tbody></table></div>
+  </div>
+</div>
+
+<!-- PROJETOS -->
+<div id="projetos" class="sec">
+  <div class="ey">Projetos</div>
+  <div class="sh">Projetos <em>Ativos</em></div>
+  <div class="card">
+    <div class="ct">+ Novo projeto</div>
+    <div class="fr">
+      <input class="inp" id="p-cli" placeholder="Cliente">
+      <select class="sel" id="p-pac">
+        <option>Histórias Essenciais — R$350</option>
+        <option>Histórias + Vídeos — R$450</option>
+        <option>Narrativa Completa — R$1.000</option>
+        <option>Tour FPV — R$2.000</option>
+        <option>Storymaker</option>
+        <option>Curadoria Mensal — R$1.000</option>
+        <option>Personalizado</option>
+      </select>
+      <input class="inp" id="p-val" placeholder="Valor R$" type="number">
+    </div>
+    <div class="fr">
+      <input class="inp" id="p-data" type="date">
+      <select class="sel" id="p-status"><option>Agendado</option><option>Captação realizada</option><option>Em edição</option><option>Entregue ✓</option></select>
+      <select class="sel" id="p-pgto"><option>Aguardando 50%</option><option>50% recebido</option><option>100% recebido ✓</option></select>
+      <button class="btn bg" onclick="addProj()">Adicionar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">Todos os projetos</div>
+    <div class="tw"><table><thead><tr><th>Cliente</th><th>Pacote</th><th>Valor</th><th>Data</th><th>Status</th><th>Pagamento</th><th></th></tr></thead><tbody id="p-tb"></tbody></table></div>
+  </div>
+</div>
+
+<!-- CONTEÚDO -->
+<div id="conteudo" class="sec">
+  <div class="ey">Instagram</div>
+  <div class="sh">Calendário de <em>Conteúdo</em></div>
+  <div class="card">
+    <div class="ct">+ Novo post</div>
+    <div class="fr">
+      <input class="inp" id="c-tit" placeholder="Título do post">
+      <select class="sel" id="c-fmt"><option>Reel</option><option>Carrossel</option><option>Foto</option><option>Texto</option></select>
+      <select class="sel" id="c-tipo"><option>Portfólio</option><option>Autoridade</option><option>Conversão</option><option>Bastidor</option></select>
+    </div>
+    <div class="fr">
+      <input class="inp" id="c-data" type="date">
+      <select class="sel" id="c-status"><option>Planejado</option><option>Produzindo</option><option>Pronto</option><option>Publicado ✓</option></select>
+      <button class="btn bg" onclick="addPost()">Adicionar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">Posts do mês</div>
+    <div class="cal-nav">
+      <button class="btn bgh" onclick="calPrev()" style="padding:5px 12px">‹</button>
+      <div class="cal-month" id="cal-title"></div>
+      <button class="btn bgh" onclick="calNext()" style="padding:5px 12px">›</button>
+    </div>
+    <div class="cal-grid" id="cal-heads"></div>
+    <div class="cal-grid" style="margin-top:4px" id="cal-days"></div>
+    <div style="margin-top:16px"><div class="tw"><table><thead><tr><th>Post</th><th>Formato</th><th>Tipo</th><th>Data</th><th>Status</th><th></th></tr></thead><tbody id="c-tb"></tbody></table></div></div>
+  </div>
+</div>
+
+<!-- FINANCEIRO -->
+<div id="fin" class="sec">
+  <div class="ey">Financeiro</div>
+  <div class="sh">Controle <em>Financeiro</em></div>
+  <div class="sg" id="f-stats"></div>
+  <div class="card">
+    <div class="ct">+ Registrar</div>
+    <div class="fr">
+      <input class="inp" id="f-desc" placeholder="Descrição">
+      <input class="inp" id="f-val" placeholder="Valor R$" type="number">
+      <input class="inp" id="f-data" type="date">
+      <select class="sel" id="f-tipo"><option>Recebido ✓</option><option>A receber</option><option>Custo</option></select>
+      <button class="btn bg" onclick="addFin()">Registrar</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">Histórico</div>
+    <div class="tw"><table><thead><tr><th>Descrição</th><th>Valor</th><th>Data</th><th>Tipo</th><th></th></tr></thead><tbody id="f-tb"></tbody></table></div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ===== STORAGE (localStorage persistente) =====
+const DB = {
+  get: k => { try { return JSON.parse(localStorage.getItem('ls_'+k)) || null; } catch { return null; } },
+  set: (k,v) => { try { localStorage.setItem('ls_'+k, JSON.stringify(v)); } catch {} }
+};
+
+// ===== NAV =====
+function go(id, btn) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+  if(id==='dash') loadDash();
+  if(id==='rotina') loadRotina();
+  if(id==='leads') loadLeads();
+  if(id==='projetos') loadProjs();
+  if(id==='conteudo') loadCal();
+  if(id==='fin') loadFin();
+}
+
+// ===== ROTINA =====
+const RD = [
+  {id:'d1', l:'Abrir CRM e ver pipeline de leads', s:'5 min'},
+  {id:'d2', l:'Responder todas as mensagens em aberto', s:'WhatsApp + DM'},
+  {id:'d3', l:'Fazer 3 novos contatos ativos', s:'WhatsApp ou DM'},
+  {id:'d4', l:'Follow-up em leads que não responderam há 2 dias', s:'1 mensagem leve'},
+  {id:'d5', l:'Postar ou preparar conteúdo para o Instagram', s:'feed ou story'},
+  {id:'d6', l:'Registrar qualquer entrada ou saída financeira', s:'2 min'},
+];
+const RS = [
+  {id:'s1', l:'Revisar pipeline: status de cada lead', s:'Segunda · 15 min'},
+  {id:'s2', l:'Planejar posts da semana no calendário', s:'Segunda · 20 min'},
+  {id:'s3', l:'Analisar o que performou melhor no Instagram', s:'Segunda · 10 min'},
+  {id:'s4', l:'Conferir meta financeira: quanto faturei, quanto falta', s:'Sexta · 5 min'},
+  {id:'s5', l:'Pedir indicação para pelo menos 1 cliente', s:'Sexta · 5 min'},
+  {id:'s6', l:'Prospectar 10 perfis novos para a semana seguinte', s:'Sexta · 30 min'},
+];
+const WEEK = [
+  {d:'Seg', t:[{l:'Revisão semanal',c:'purple'},{l:'Planejar conteúdo',c:'blue'},{l:'3 contatos',c:'gold'}]},
+  {d:'Ter', t:[{l:'Postar Instagram',c:'blue'},{l:'3 contatos',c:'gold'},{l:'Follow-ups',c:'gold'}]},
+  {d:'Qua', t:[{l:'3 contatos',c:'gold'},{l:'Responder DMs',c:'gold'},{l:'Edição',c:'green'}]},
+  {d:'Qui', t:[{l:'Postar Instagram',c:'blue'},{l:'3 contatos',c:'gold'},{l:'Follow-ups',c:'gold'}]},
+  {d:'Sex', t:[{l:'Meta financeira',c:'purple'},{l:'Postar Instagram',c:'blue'},{l:'Pedir indicação',c:'green'},{l:'Prospectar 10',c:'gold'}]},
+  {d:'Sáb', t:[{l:'Captação',c:'green'},{l:'Edição',c:'green'}]},
+  {d:'Dom', t:[{l:'Descanso',c:'purple'},{l:'Planejar semana',c:'blue'}]},
+];
+
+function loadRotina() {
+  const done = DB.get('rotina') || {};
+  const rd = document.getElementById('r-diaria');
+  rd.innerHTML = '';
+  RD.forEach(item => {
+    const k = 'd-'+item.id;
+    const el = document.createElement('div');
+    el.className = 'ci'+(done[k]?' done':'');
+    el.innerHTML = `<div class="cbox">${done[k]?'✓':''}</div><div><div class="clabel">${item.l}</div><div class="csub">${item.s}</div></div>`;
+    el.onclick = () => toggleR(k, el);
+    rd.appendChild(el);
+  });
+  const rs = document.getElementById('r-semanal');
+  rs.innerHTML = '';
+  RS.forEach(item => {
+    const k = 's-'+item.id;
+    const el = document.createElement('div');
+    el.className = 'ci'+(done[k]?' done':'');
+    el.innerHTML = `<div class="cbox">${done[k]?'✓':''}</div><div><div class="clabel">${item.l}</div><div class="csub">${item.s}</div></div>`;
+    el.onclick = () => toggleR(k, el);
+    rs.appendChild(el);
+  });
+  const wg = document.getElementById('r-week');
+  wg.innerHTML = '';
+  WEEK.forEach(d => {
+    const dc = document.createElement('div');
+    dc.className = 'dc';
+    dc.innerHTML = `<div class="dn">${d.d}</div><div class="dt">${d.t.map(t=>`<div class="dtask ${t.c}">${t.l}</div>`).join('')}</div>`;
+    wg.appendChild(dc);
+  });
+}
+
+function toggleR(k, el) {
+  const done = DB.get('rotina') || {};
+  done[k] = !done[k];
+  DB.set('rotina', done);
+  el.classList.toggle('done');
+  el.querySelector('.cbox').textContent = done[k] ? '✓' : '';
+}
+
+function resetR(tipo) {
+  const done = DB.get('rotina') || {};
+  const p = tipo==='d' ? 'd-' : 's-';
+  Object.keys(done).forEach(k => { if(k.startsWith(p)) delete done[k]; });
+  DB.set('rotina', done);
+  loadRotina();
+}
+
+// ===== LEADS =====
+const LBADGE = {
+  'Abordado':'bg-blue','Visualizou':'bg-gray','Em conversa':'bg-gold',
+  'Orçamento enviado':'bg-purple','Fechado ✓':'bg-green','Perdido':'bg-red'
+};
+
+function loadLeads() {
+  const data = DB.get('leads') || [];
+  const tb = document.getElementById('l-tb');
+  if(!data.length) { tb.innerHTML = `<tr><td colspan="7"><div class="empty"><div class="ei">✦</div>Nenhum lead cadastrado</div></td></tr>`; return; }
+  tb.innerHTML = data.map((l,i) => `<tr>
+    <td><strong>${l.nome}</strong></td>
+    <td style="color:var(--gray)">${l.tipo||'—'}</td>
+    <td>${l.canal}</td>
+    <td><span class="badge ${LBADGE[l.status]||'bg-gray'}">${l.status}</span></td>
+    <td style="color:var(--gray);font-size:10px">${l.data}</td>
+    <td style="color:var(--gray);font-size:10px;max-width:120px">${l.obs||'—'}</td>
+    <td><button class="btn br" onclick="delLead(${i})">✕</button></td>
+  </tr>`).join('');
+}
+
+function addLead() {
+  const nome = document.getElementById('l-nome').value.trim();
+  if(!nome) return;
+  const data = DB.get('leads') || [];
+  data.unshift({nome, tipo:document.getElementById('l-tipo').value, canal:document.getElementById('l-canal').value, status:document.getElementById('l-status').value, obs:document.getElementById('l-obs').value, data:new Date().toLocaleDateString('pt-BR')});
+  DB.set('leads', data);
+  document.getElementById('l-nome').value='';
+  document.getElementById('l-tipo').value='';
+  document.getElementById('l-obs').value='';
+  loadLeads(); loadDash();
+}
+
+function delLead(i) {
+  const data = DB.get('leads') || [];
+  data.splice(i,1);
+  DB.set('leads', data);
+  loadLeads(); loadDash();
+}
+
+// ===== PROJETOS =====
+const PBADGE = {'Agendado':'bg-blue','Captação realizada':'bg-purple','Em edição':'bg-gold','Entregue ✓':'bg-green'};
+const PGBADGE = {'Aguardando 50%':'bg-red','50% recebido':'bg-gold','100% recebido ✓':'bg-green'};
+
+function loadProjs() {
+  const data = DB.get('projs') || [];
+  const tb = document.getElementById('p-tb');
+  if(!data.length) { tb.innerHTML = `<tr><td colspan="7"><div class="empty"><div class="ei">✦</div>Nenhum projeto</div></td></tr>`; return; }
+  tb.innerHTML = data.map((p,i) => `<tr>
+    <td><strong>${p.cli}</strong></td>
+    <td style="font-size:10px;color:var(--gray)">${p.pac}</td>
+    <td style="color:var(--gold)">R$${Number(p.val).toLocaleString('pt-BR')}</td>
+    <td style="color:var(--gray);font-size:10px">${p.data||'—'}</td>
+    <td><span class="badge ${PBADGE[p.status]||'bg-gray'}">${p.status}</span></td>
+    <td><span class="badge ${PGBADGE[p.pgto]||'bg-gray'}">${p.pgto}</span></td>
+    <td><button class="btn br" onclick="delProj(${i})">✕</button></td>
+  </tr>`).join('');
+}
+
+function addProj() {
+  const cli = document.getElementById('p-cli').value.trim();
+  if(!cli) return;
+  const data = DB.get('projs') || [];
+  data.unshift({cli, pac:document.getElementById('p-pac').value, val:document.getElementById('p-val').value||0, data:document.getElementById('p-data').value, status:document.getElementById('p-status').value, pgto:document.getElementById('p-pgto').value});
+  DB.set('projs', data);
+  document.getElementById('p-cli').value='';
+  document.getElementById('p-val').value='';
+  loadProjs(); loadDash();
+}
+
+function delProj(i) {
+  const data = DB.get('projs') || [];
+  data.splice(i,1);
+  DB.set('projs', data);
+  loadProjs();
+}
+
+// ===== CONTEÚDO + CALENDÁRIO =====
+let calYear = new Date().getFullYear();
+let calMonth = new Date().getMonth();
+
+const CBADGE = {'Reel':'bg-gold','Carrossel':'bg-blue','Foto':'bg-purple','Texto':'bg-gray'};
+const CTBADGE = {'Portfólio':'bg-gold','Autoridade':'bg-blue','Conversão':'bg-green','Bastidor':'bg-purple'};
+const CSBADGE = {'Planejado':'bg-gray','Produzindo':'bg-gold','Pronto':'bg-blue','Publicado ✓':'bg-green'};
+
+function loadCal() {
+  const posts = DB.get('posts') || [];
+  // Calendar header
+  const heads = document.getElementById('cal-heads');
+  heads.innerHTML = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].map(d=>`<div class="cal-head">${d}</div>`).join('');
+  // Month title
+  document.getElementById('cal-title').textContent = new Date(calYear, calMonth).toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+  // Days
+  const days = document.getElementById('cal-days');
+  days.innerHTML = '';
+  const first = new Date(calYear, calMonth, 1).getDay();
+  const total = new Date(calYear, calMonth+1, 0).getDate();
+  const today = new Date();
+  for(let i=0;i<first;i++) {
+    const d = document.createElement('div');
+    d.className = 'cal-day other';
+    days.appendChild(d);
+  }
+  for(let d=1;d<=total;d++) {
+    const dc = document.createElement('div');
+    const isToday = d===today.getDate() && calMonth===today.getMonth() && calYear===today.getFullYear();
+    dc.className = 'cal-day'+(isToday?' today':'');
+    const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dayPosts = posts.filter(p => p.data === dateStr);
+    dc.innerHTML = `<div class="cal-num">${d}</div>${dayPosts.map(p=>`<div class="cal-dot" style="background:${p.status==='Publicado ✓'?'var(--green)':p.status==='Pronto'?'var(--blue)':'var(--gold)'}"></div>`).join('')}`;
+    days.appendChild(dc);
+  }
+  // Table
+  const tb = document.getElementById('c-tb');
+  if(!posts.length) { tb.innerHTML = `<tr><td colspan="6"><div class="empty"><div class="ei">✦</div>Nenhum post planejado</div></td></tr>`; return; }
+  tb.innerHTML = [...posts].sort((a,b)=>a.data>b.data?1:-1).map((p,i) => `<tr>
+    <td><strong>${p.tit}</strong></td>
+    <td><span class="badge ${CBADGE[p.fmt]||'bg-gray'}">${p.fmt}</span></td>
+    <td><span class="badge ${CTBADGE[p.tipo]||'bg-gray'}">${p.tipo}</span></td>
+    <td style="color:var(--gray);font-size:10px">${p.data||'—'}</td>
+    <td><span class="badge ${CSBADGE[p.status]||'bg-gray'}">${p.status}</span></td>
+    <td><button class="btn br" onclick="delPost(${i})">✕</button></td>
+  </tr>`).join('');
+}
+
+function calPrev() { calMonth--; if(calMonth<0){calMonth=11;calYear--;} loadCal(); }
+function calNext() { calMonth++; if(calMonth>11){calMonth=0;calYear++;} loadCal(); }
+
+function addPost() {
+  const tit = document.getElementById('c-tit').value.trim();
+  if(!tit) return;
+  const data = DB.get('posts') || [];
+  data.push({tit, fmt:document.getElementById('c-fmt').value, tipo:document.getElementById('c-tipo').value, data:document.getElementById('c-data').value, status:document.getElementById('c-status').value});
+  DB.set('posts', data);
+  document.getElementById('c-tit').value='';
+  loadCal(); loadDash();
+}
+
+function delPost(i) {
+  const data = DB.get('posts') || [];
+  data.splice(i,1);
+  DB.set('posts', data);
+  loadCal();
+}
+
+// ===== FINANCEIRO =====
+function loadFin() {
+  const data = DB.get('fin') || [];
+  const mes = new Date().getMonth(), ano = new Date().getFullYear();
+  const deste = data.filter(e => { if(!e.data) return false; const d=new Date(e.data); return d.getMonth()===mes&&d.getFullYear()===ano; });
+  const rec = deste.filter(e=>e.tipo==='Recebido ✓').reduce((a,e)=>a+Number(e.val),0);
+  const ar = deste.filter(e=>e.tipo==='A receber').reduce((a,e)=>a+Number(e.val),0);
+  const meta = 5000;
+  const falta = Math.max(0, meta-rec);
+  document.getElementById('f-stats').innerHTML = `
+    <div class="sc"><div class="sl">Recebido</div><div class="sv">R$${rec.toLocaleString('pt-BR')}</div></div>
+    <div class="sc"><div class="sl">A receber</div><div class="sv">R$${ar.toLocaleString('pt-BR')}</div></div>
+    <div class="sc"><div class="sl">Meta</div><div class="sv">R$5.000</div></div>
+    <div class="sc"><div class="sl">Falta</div><div class="sv" style="color:var(--red)">R$${falta.toLocaleString('pt-BR')}</div></div>`;
+  const tb = document.getElementById('f-tb');
+  if(!data.length) { tb.innerHTML = `<tr><td colspan="5"><div class="empty"><div class="ei">✦</div>Nenhuma entrada</div></td></tr>`; return; }
+  tb.innerHTML = [...data].reverse().map((e,i) => `<tr>
+    <td>${e.desc}</td>
+    <td style="color:${e.tipo==='Custo'?'var(--red)':'var(--gold)'};font-weight:500">${e.tipo==='Custo'?'−':'+'}R$${Number(e.val).toLocaleString('pt-BR')}</td>
+    <td style="color:var(--gray);font-size:10px">${e.data||'—'}</td>
+    <td><span class="badge ${e.tipo==='Recebido ✓'?'bg-green':e.tipo==='A receber'?'bg-gold':'bg-red'}">${e.tipo}</span></td>
+    <td><button class="btn br" onclick="delFin(${data.length-1-i})">✕</button></td>
+  </tr>`).join('');
+}
+
+function addFin() {
+  const desc = document.getElementById('f-desc').value.trim();
+  if(!desc) return;
+  const data = DB.get('fin') || [];
+  data.push({desc, val:document.getElementById('f-val').value||0, data:document.getElementById('f-data').value, tipo:document.getElementById('f-tipo').value});
+  DB.set('fin', data);
+  document.getElementById('f-desc').value='';
+  document.getElementById('f-val').value='';
+  loadFin(); loadDash();
+}
+
+function delFin(i) {
+  const data = DB.get('fin') || [];
+  data.splice(i,1);
+  DB.set('fin', data);
+  loadFin(); loadDash();
+}
+
+// ===== DASHBOARD =====
+function loadDash() {
+  const leads = DB.get('leads') || [];
+  const projs = DB.get('projs') || [];
+  const posts = DB.get('posts') || [];
+  const fin = DB.get('fin') || [];
+  const mes = new Date().getMonth(), ano = new Date().getFullYear();
+  const rec = fin.filter(e=>{ if(!e.data||e.tipo!=='Recebido ✓') return false; const d=new Date(e.data); return d.getMonth()===mes&&d.getFullYear()===ano; }).reduce((a,e)=>a+Number(e.val),0);
+  const meta = 5000;
+  const pct = Math.min(100, Math.round(rec/meta*100));
+  const leadsA = leads.filter(l=>!['Fechado ✓','Perdido'].includes(l.status)).length;
+  const projA = projs.filter(p=>p.status!=='Entregue ✓').length;
+  const postP = posts.filter(p=>p.status==='Publicado ✓').length;
+
+  document.getElementById('d-stats').innerHTML = `
+    <div class="sc"><div class="sl">Faturado este mês</div><div class="sv">R$${rec.toLocaleString('pt-BR')}</div><div class="ss">Meta: R$5.000</div></div>
+    <div class="sc"><div class="sl">Leads ativos</div><div class="sv">${leadsA}</div><div class="ss">em aberto</div></div>
+    <div class="sc"><div class="sl">Projetos ativos</div><div class="sv">${projA}</div><div class="ss">em andamento</div></div>
+    <div class="sc"><div class="sl">Posts publicados</div><div class="sv">${postP}</div><div class="ss">este mês</div></div>`;
+  document.getElementById('d-pct').textContent = pct+'%';
+  document.getElementById('d-bar').style.width = pct+'%';
+
+  const pendentes = [];
+  if(leadsA>0) pendentes.push(`Checar ${leadsA} lead(s) em aberto`);
+  if(projA>0) pendentes.push(`${projA} projeto(s) ativo(s)`);
+  const semPost = posts.filter(p=>['Planejado','Produzindo'].includes(p.status)).length;
+  if(semPost>0) pendentes.push(`${semPost} post(s) aguardando produção`);
+  if(rec<meta) pendentes.push(`Faltam R$${(meta-rec).toLocaleString('pt-BR')} para a meta`);
+  document.getElementById('d-acoes').innerHTML = pendentes.length ? pendentes.map(a=>`<div class="ci"><div class="cbox"></div><div class="clabel">${a}</div></div>`).join('') : `<div class="empty"><div class="ei">✦</div>Tudo em dia!</div>`;
+
+  const ultimas = fin.filter(e=>e.tipo==='Recebido ✓').slice(-3).reverse();
+  document.getElementById('d-ents').innerHTML = ultimas.length ? ultimas.map(e=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--s3)"><span style="font-size:11px;color:var(--gray)">${e.desc}</span><span style="font-size:12px;color:var(--gold);font-weight:500">+R$${Number(e.val).toLocaleString('pt-BR')}</span></div>`).join('') : `<div class="empty"><div class="ei">✦</div>Nenhuma entrada</div>`;
+}
+
+// INIT
+loadDash();
+loadRotina();
+</script>
+</body>
+</html>
